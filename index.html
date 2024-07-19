@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Maintenance Calories Calculator</title>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f4f4f4;
+            padding-top: 50px;
+        }
+        .container {
+            max-width: 600px;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .result {
+            margin-top: 20px;
+        }
+        .description {
+            font-style: italic;
+        }
+        .legend-table {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="text-center">Maintenance Calories Calculator</h1>
+        <form>
+            <div class="form-group">
+                <label for="age">Age</label>
+                <input type="number" class="form-control" id="age" value="45" placeholder="Enter your age">
+            </div>
+            <div class="form-group">
+                <label for="gender">Gender</label>
+                <select class="form-control" id="gender">
+                    <option value="Male" selected>Male</option>
+                    <option value="Female">Female</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="weight">Weight (lbs)</label>
+                <input type="number" class="form-control" id="weight" value="245" placeholder="Enter your weight in pounds">
+            </div>
+            <div class="form-group">
+                <label for="height-ft">Height (ft)</label>
+                <input type="number" class="form-control" id="height-ft" value="5" placeholder="Enter your height in feet">
+            </div>
+            <div class="form-group">
+                <label for="height-in">Height (in)</label>
+                <input type="number" class="form-control" id="height-in" value="11" placeholder="Enter your height in inches">
+            </div>
+            <div class="form-group">
+                <label for="body-fat">Body Fat %</label>
+                <input type="number" class="form-control" id="body-fat" value="30" placeholder="Enter your body fat percentage">
+            </div>
+            <div class="form-group">
+                <label for="steps">Steps (per day)</label>
+                <input type="number" class="form-control" id="steps" value="10000" placeholder="Enter your daily steps">
+            </div>
+            <button type="button" class="btn btn-success btn-block" onclick="calculateMaintenanceCalories()">Calculate</button>
+        </form>
+
+        <div class="result">
+            <h2>Maintenance Calories:</h2>
+            <p id="result-sedentary"></p>
+            <p id="result-light"></p>
+            <p id="result-moderate"></p>
+            <p id="result-active"></p>
+            <p id="result-super-active"></p>
+            <p id="result-steps"></p>
+        </div>
+
+        <div class="legend-table">
+            <h2>Activity Level Descriptions:</h2>
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>Activity Level</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Sedentary</td>
+                        <td>Little to no exercise, desk job.</td>
+                    </tr>
+                    <tr>
+                        <td>Light Activity</td>
+                        <td>Light exercise/sports 1-3 days/week (e.g., casual walking, light yoga, stretching).</td>
+                    </tr>
+                    <tr>
+                        <td>Moderate Activity</td>
+                        <td>Moderate exercise/sports 3-5 days/week (e.g., brisk walking, moderate cycling, swimming, weight training 2-3 times/week).</td>
+                    </tr>
+                    <tr>
+                        <td>Very Active</td>
+                        <td>Hard exercise/sports 6-7 days a week (e.g., running, intense cycling, high-intensity interval training, competitive sports, weight training 4-5 times/week).</td>
+                    </tr>
+                    <tr>
+                        <td>Super Active</td>
+                        <td>Very hard exercise/sports & a physical job (e.g., professional athletes, construction workers, physical labor jobs).</td>
+                    </tr>
+                    <tr>
+                        <td>10k Steps/Day</td>
+                        <td>Moderate exercise plus walking 10,000 steps/day.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        function calculateMaintenanceCalories() {
+            const age = document.getElementById('age').value;
+            const gender = document.getElementById('gender').value;
+            const weight = document.getElementById('weight').value;
+            const heightFt = document.getElementById('height-ft').value;
+            const heightIn = document.getElementById('height-in').value;
+            const bodyFat = document.getElementById('body-fat').value;
+            const steps = document.getElementById('steps').value;
+
+            if (!age || !weight || !heightFt || !heightIn || !bodyFat) {
+                alert('Please fill in all fields');
+                return;
+            }
+
+            const weightKg = weight * 0.453592;
+            const heightCm = (heightFt * 30.48) + (heightIn * 2.54);
+            const leanBodyMassKg = weightKg * (1 - (bodyFat / 100));
+            const BMR = 370 + (21.6 * leanBodyMassKg);
+
+            const sedentary = BMR * 1.2;
+            const light = BMR * 1.375;
+            const moderate = BMR * 1.55;
+            const active = BMR * 1.725;
+            const superActive = BMR * 1.9;
+            const additionalCalories = steps * 0.04;
+
+            document.getElementById('result-sedentary').innerText = `Sedentary: ${sedentary.toFixed(2)} calories/day`;
+            document.getElementById('result-light').innerText = `Light Activity: ${light.toFixed(2)} calories/day`;
+            document.getElementById('result-moderate').innerText = `Moderate Activity: ${moderate.toFixed(2)} calories/day`;
+            document.getElementById('result-active').innerText = `Very Active: ${active.toFixed(2)} calories/day`;
+            document.getElementById('result-super-active').innerText = `Super Active: ${superActive.toFixed(2)} calories/day`;
+            document.getElementById('result-steps').innerText = `Calories burned from steps: ${additionalCalories.toFixed(2)} calories/day (based on ${steps} steps)`;
+        }
+    </script>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
